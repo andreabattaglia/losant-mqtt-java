@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.losant</groupId>
+  <artifactId>losant-mqtt-java</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Losant MQTT Java Client</name>
+  <description>Java MQTT client for connecting devices to the Losant IoT Platform (broker.losant.com)</description>
+  <url>https://github.com/Losant/losant-mqtt-java</url>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
+  </licenses>
+
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <paho.version>1.2.5</paho.version>
+    <jackson.version>2.21.5</jackson.version>
+    <junit.version>5.10.3</junit.version>
+    <testcontainers.version>1.21.4</testcontainers.version>
+    <slf4j.simple.version>1.7.36</slf4j.simple.version>
+    <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
+    <dependency.check.maven.version>12.1.3</dependency.check.maven.version>
+    <jacoco.maven.plugin.version>0.8.13</jacoco.maven.plugin.version>
+    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+    <nugetconfAnalyzerEnabled>false</nugetconfAnalyzerEnabled>
+    <nuspecAnalyzerEnabled>false</nuspecAnalyzerEnabled>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.paho</groupId>
+      <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+      <version>${paho.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.simple.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.surefire.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency.check.maven.version}</version>
+        <inherited>false</inherited>
+        <configuration>
+          <failBuildOnCVSS>7</failBuildOnCVSS>
+          <outputDirectory>code-analysis</outputDirectory>
+          <nvdApiKey>${nvd.api.key}</nvdApiKey>
+          <ossindexAnalyzerEnabled>${ossindexAnalyzerEnabled}</ossindexAnalyzerEnabled>
+          <assemblyAnalyzerEnabled>${assemblyAnalyzerEnabled}</assemblyAnalyzerEnabled>
+          <nugetconfAnalyzerEnabled>${nugetconfAnalyzerEnabled}</nugetconfAnalyzerEnabled>
+          <nuspecAnalyzerEnabled>${nuspecAnalyzerEnabled}</nuspecAnalyzerEnabled>
+          <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
+          <ossIndexWarnOnlyOnRemoteErrors>true</ossIndexWarnOnlyOnRemoteErrors>
+          <skipProvidedScope>true</skipProvidedScope>
+          <skipTestScope>true</skipTestScope>
+          <suppressionFiles>
+            <suppressionFile>${maven.multiModuleProjectDirectory}/dependency-check-suppression.xml</suppressionFile>
+          </suppressionFiles>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
