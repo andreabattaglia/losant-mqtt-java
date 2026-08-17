@@ -138,16 +138,30 @@ public final class Device {
   }
 
   /**
-   * Closes the connection to the Losant broker.
+   * Closes the connection to the Losant broker and releases the underlying MQTT client's
+   * resources. Paho does not pool connections: each {@link Device} owns exactly one client, so
+   * this must be called (directly, or via {@link DeviceRegistry}) for a graceful shutdown.
    */
   public synchronized void disconnect() throws MqttException {
-    if (client != null && client.isConnected()) {
-      client.disconnect();
+    if (client == null) {
+      return;
+    }
+    try {
+      if (client.isConnected()) {
+        client.disconnect();
+      }
+    } finally {
+      client.close();
+      client = null;
     }
   }
 
   public boolean isConnected() {
     return client != null && client.isConnected();
+  }
+
+  public String getId() {
+    return id;
   }
 
   /**

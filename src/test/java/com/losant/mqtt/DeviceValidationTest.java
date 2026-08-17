@@ -1,5 +1,7 @@
 package com.losant.mqtt;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -48,5 +50,27 @@ class DeviceValidationTest {
     Device device = new Device("device-1", "key", "secret");
 
     assertFalse(device.isConnected());
+  }
+
+  @Test
+  void exposesTheIdItWasConstructedWith() {
+    Device device = new Device("device-1", "key", "secret");
+
+    assertEquals("device-1", device.getId());
+  }
+
+  @Test
+  void disconnectIsANoOpWhenNeverConnected() {
+    Device device = new Device("device-1", "key", "secret");
+
+    assertDoesNotThrow(device::disconnect);
+  }
+
+  @Test
+  void disconnectIsIdempotent() {
+    Device device = new Device("device-1", "key", "secret");
+
+    assertDoesNotThrow(device::disconnect);
+    assertDoesNotThrow(device::disconnect);
   }
 }

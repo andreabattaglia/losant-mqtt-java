@@ -148,6 +148,23 @@ class DeviceMqttIntegrationTest {
     assertFalse(device.isConnected());
   }
 
+  @Test
+  @Timeout(15)
+  void deviceRegistryShutsDownAllRegisteredDevicesTogether() throws Exception {
+    Device deviceA = newDevice("device-registry-a", 0);
+    Device deviceB = newDevice("device-registry-b", 0);
+    connectAndAwaitReady(deviceA);
+    connectAndAwaitReady(deviceB);
+
+    DeviceRegistry registry = new DeviceRegistry();
+    registry.register(deviceA);
+    registry.register(deviceB);
+    registry.shutdownAll();
+
+    assertFalse(deviceA.isConnected());
+    assertFalse(deviceB.isConnected());
+  }
+
   private Device newDevice(String id, int qosPublish) {
     return new Device(id, "key", "secret", Transport.TCP, brokerHost, brokerPort, qosPublish);
   }
