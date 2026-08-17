@@ -21,6 +21,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * <a href="https://github.com/Losant/losant-mqtt-js">losant-mqtt-js</a> client: construct with
  * a device ID and Losant access key/secret, register listeners for commands and connection
  * events, then {@link #connect()} and {@link #sendState(Map)}.
+ *
+ * <p>Each instance owns exactly one underlying Paho {@code MqttClient} — Paho does not pool
+ * connections. Applications managing several devices should use {@link DeviceRegistry} to shut
+ * them all down together.
  */
 public final class Device {
 
@@ -91,6 +95,10 @@ public final class Device {
   /**
    * Opens the connection to the Losant broker, subscribes to the device's command topic,
    * and enables automatic reconnection.
+   *
+   * <p>{@link ConnectionListener#onConnect()} (and {@code onReconnect}) only fire once the
+   * command-topic subscription has been acknowledged by the broker, so callers can treat that
+   * event as "safe to publish/expect commands", not just "socket connected".
    */
   public synchronized void connect() throws MqttException {
     String broker = transport.scheme() + "://" + mqttEndpoint + ":" + mqttPort;
